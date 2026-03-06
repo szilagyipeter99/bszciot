@@ -91,11 +91,8 @@ static void mqtt_handle_received_data(void *data) {
 	if (strncmp(event->topic, "example/topic/name", event->topic_len) == 0) {
 
 		if (strncmp(event->data, "SET", event->data_len) == 0) {
-			led_state = true;
-			ESP_LOGI(TAG, "LED light turned ON");
-		} else if (strncmp(event->data, "OFF", event->data_len) == 0) {
-			led_state = false;
-			ESP_LOGI(TAG, "LED light turned OFF");
+			led_state = !led_state;
+			ESP_LOGI(TAG, "LED turned ON/OFF");
 		} else {
 			ESP_LOGE(TAG, "Invalid event data");
 			return;
@@ -105,5 +102,6 @@ static void mqtt_handle_received_data(void *data) {
 	}
 
 }
+
 
 
