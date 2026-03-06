@@ -16,16 +16,16 @@ static void handle_btn_task(void *params) {
 	gpio_config_t btn_config = {
 		.pin_bit_mask = (1ULL << BTN_PIN),
 		.mode = GPIO_MODE_INPUT,
-		.pull_up_en = true,
+		.pull_down_en = true,
 	};
 	ESP_ERROR_CHECK(gpio_config(&btn_config));
 
-	bool last_btn_state = true;
+	bool last_btn_state = false;
 	bool curr_btn_state;
 
 	while (true) {
 		curr_btn_state = gpio_get_level(BTN_PIN);
-		if (curr_btn_state == false && last_btn_state == true) {
+		if (curr_btn_state == true && last_btn_state == false) {
 			mqtt_publish_btn_pressed();
 		}
 		last_btn_state = curr_btn_state;
