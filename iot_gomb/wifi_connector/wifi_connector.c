@@ -5,7 +5,6 @@
 
 #define SSID 12345
 #define PASSW 12345
-
 #define MAX_RETRY_ATTEMPTS 5
 
 static uint8_t retry_cntr = 0;
@@ -100,3 +99,4 @@ esp_err_t wifi_start_phase() {
 	}
 
 }
+
