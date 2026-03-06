@@ -7,7 +7,7 @@
 
 static esp_mqtt_client_handle_t my_mqtt_client;
 
-static bool led_state = false;
+static bool set_state = false;
 
 static void mqtt_handle_received_data(void *data);
 
@@ -91,17 +91,18 @@ static void mqtt_handle_received_data(void *data) {
 	if (strncmp(event->topic, "example/topic/name", event->topic_len) == 0) {
 
 		if (strncmp(event->data, "SET", event->data_len) == 0) {
-			led_state = !led_state;
+			set_state = !set_state;
 			ESP_LOGI(TAG, "LED turned ON/OFF");
 		} else {
 			ESP_LOGE(TAG, "Invalid event data");
 			return;
 		}
 
-		xQueueSend(led_queue, &led_state, 0);
+		xQueueSend(led_queue, &set_state, 0);
 	}
 
 }
+
 
 
 
