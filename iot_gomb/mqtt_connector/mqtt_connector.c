@@ -66,7 +66,7 @@ esp_err_t mqtt_init() {
 
 void mqtt_publish_btn_pressed() {
 
-	esp_mqtt_client_publish(my_mqtt_client, "my_home/living_room/led7/set", "SET", 0, 1, 0);
+	esp_mqtt_client_publish(my_mqtt_client, "example/topic/name", "SET", 0, 1, 0);
 
 	EventBits_t bits = xEventGroupWaitBits(my_event_group, MQTT_PUBLISHED_BIT, pdFALSE, pdFALSE, pdMS_TO_TICKS(5000));
 
@@ -78,3 +78,4 @@ void mqtt_publish_btn_pressed() {
 	}
 
 }
+
