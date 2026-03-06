@@ -1,3 +1,6 @@
+### Mappa felépítése:
+
+```bash
 iot_gomb
 ├── main
 │   ├── mqtt_connector
@@ -11,3 +14,4 @@ iot_gomb
 │   ├── main.c
 │   └── ...
 └── ...
+```
