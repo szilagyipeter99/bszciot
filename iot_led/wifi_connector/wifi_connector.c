@@ -3,6 +3,8 @@
 
 #include "app_defs.h"
 
+#define SSID 12345
+#define PASSW 12345
 #define MAX_RETRY_ATTEMPTS 5
 
 static uint8_t retry_cntr = 0;
@@ -70,8 +72,8 @@ void wifi_config_phase() {
 	wifi_config_t my_sta_config = {
 		.sta =
 			{
-				.ssid = "...",
-				.password = "...",
+				.ssid = SSID,
+				.password = PASSW,
 				.threshold.authmode = WIFI_AUTH_WPA3_PSK,
 			},
 	};
@@ -95,4 +97,5 @@ esp_err_t wifi_start_phase() {
 	} else {
 		return ESP_ERR_TIMEOUT;
 	}
+
 }
