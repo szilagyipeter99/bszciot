@@ -4,6 +4,7 @@
 #include "app_defs.h"
 
 #define BROKER_ADDR "mqtt://broker.broker"
+#define LED_TOPIC "example/topic/name"
 
 static esp_mqtt_client_handle_t my_mqtt_client;
 
@@ -72,7 +73,7 @@ esp_err_t mqtt_init() {
 
 esp_err_t mqtt_subscribe_to_led() {
 
-	esp_mqtt_client_subscribe(my_mqtt_client, "example/topic/name", 1);
+	esp_mqtt_client_subscribe(my_mqtt_client, LED_TOPIC, 1);
 
 	EventBits_t bits = xEventGroupWaitBits(my_event_group, MQTT_SUBSCRIBED_BIT, pdFALSE, pdFALSE, pdMS_TO_TICKS(5000));
 
@@ -88,7 +89,7 @@ static void mqtt_handle_received_data(void *data) {
 
 	esp_mqtt_event_handle_t event = data;
 
-	if (strncmp(event->topic, "example/topic/name", event->topic_len) == 0) {
+	if (strncmp(event->topic, LED_TOPIC, event->topic_len) == 0) {
 
 		if (strncmp(event->data, "SET", event->data_len) == 0) {
 			set_state = !set_state;
@@ -102,6 +103,7 @@ static void mqtt_handle_received_data(void *data) {
 	}
 
 }
+
 
 
 
