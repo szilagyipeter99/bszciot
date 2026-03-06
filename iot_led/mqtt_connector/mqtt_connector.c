@@ -42,7 +42,7 @@ static void mqtt_event_handler(void *arg, esp_event_base_t base, int32_t id, voi
 esp_err_t mqtt_init() {
 
 	esp_mqtt_client_config_t my_mqtt_config = {
-		.broker.address.uri = "mqtt://petermqtt.local",
+		.broker.address.uri = "mqtt://broker.broker",
 	};
 
 	my_mqtt_client = esp_mqtt_client_init(&my_mqtt_config);
@@ -103,3 +103,4 @@ static void mqtt_handle_received_data(void *data) {
 	}
 
 }
+
