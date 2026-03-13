@@ -1,0 +1,78 @@
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "nvs_flash.h"
+
+#include "app_defs.h"
+#include "mqtt_connector.h"
+#include "wifi_connector.h"
+
+#define BTN_PIN GPIO_NUM_4
+
+EventGroupHandle_t my_event_group;
+
+bool do_count = false;
+int timer_counter = 0;
+ 
+static void handle_btn_task(void *params) {
+
+	gpio_config_t btn_config = {
+		.pin_bit_mask = (1ULL << BTN_PIN),
+		.mode = GPIO_MODE_INPUT,
+		.pull_down_en = true,
+	};
+	ESP_ERROR_CHECK(gpio_config(&btn_config));
+
+	bool last_btn_state = false;
+	bool curr_btn_state;
+
+	while (true) {
+		curr_btn_state = gpio_get_level(BTN_PIN);
+		if (curr_btn_state == true && last_btn_state == false) {
+
+            if (timer_counter < 50 && timer_counter > 1) {
+                mqtt_publish_btn_pressed();
+                do_count = false
+            } else {
+                do_count = true;
+            }
+            timer_counter = 0;
+
+		}
+		last_btn_state = curr_btn_state;
+		vTaskDelay(pdMS_TO_TICKS(20));
+	}
+}
+
+static void stop_watch(void *params) {
+    while (true) {
+        if (do_count) {
+            timer_counter++;
+        }
+        vTaskDelay(1);
+    }
+}
+
+void app_main(void) {
+
+	esp_err_t ret = nvs_flash_init();
+
+	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		ret = nvs_flash_init();
+	}
+
+	ESP_ERROR_CHECK(ret);
+
+	my_event_group = xEventGroupCreate();
+
+	wifi_init_phase();
+	wifi_config_phase();
+
+	ESP_ERROR_CHECK(wifi_start_phase());
+
+	ESP_ERROR_CHECK(mqtt_init());
+
+	xTaskCreate(handle_btn_task, "Handle Button", 2048, NULL, 1, NULL);
+    xTaskCreate(stop_watch, "Stopwatch", 2048, NULL, 1, NULL);
+}
